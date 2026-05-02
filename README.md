@@ -6,7 +6,7 @@ Project ini adalah website manual book yang menampilkan langkah-langkah fitur be
 
 ## ⚙️ Setup Database
 
-### 3. Buat Database
+### 1. Buat Database
 
 Jalankan di MySQL / phpMyAdmin:
 
@@ -16,7 +16,7 @@ CREATE DATABASE manual_book;
 
 ---
 
-### 4. Import Database
+### 2. Import Database
 
 Menggunakan terminal:
 
@@ -31,12 +31,12 @@ Atau via phpMyAdmin:
 
 ---
 
-### 5. Konfigurasi Database
+### 3. Konfigurasi Environment
 
-Edit file:
+Copy .env
 
 ```
-website/config.php
+cp .env
 ```
 
 Sesuaikan:
