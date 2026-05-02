@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Manual Book Detail</title>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+    crossorigin="anonymous"
+  >
+  <style>
+    :root {
+      --app-bg: #f4efe6;
+      --panel-bg: rgba(255, 255, 255, 0.92);
+      --panel-border: rgba(92, 76, 59, 0.12);
+      --ink: #2d241c;
+      --muted: #756657;
+      --accent: #b3562c;
+      --accent-deep: #7d3516;
+      --accent-soft: #f2dcc6;
+      --shadow: 0 22px 55px rgba(75, 49, 32, 0.12);
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(255, 222, 185, 0.95), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(188, 220, 201, 0.55), transparent 28%),
+        linear-gradient(135deg, #f8f1e7 0%, #efe3d3 52%, #f3ece3 100%);
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .app-shell {
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    .surface-card {
+      background: rgba(255, 255, 255, 0.86);
+      border: 1px solid rgba(92, 76, 59, 0.1);
+      border-radius: 28px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--accent-deep);
+      text-decoration: none;
+      font-weight: 600;
+      margin-bottom: 18px;
+    }
+
+    .hero-card {
+      border-radius: 24px;
+      background:
+        linear-gradient(135deg, rgba(179, 86, 44, 0.97), rgba(104, 39, 18, 0.97)),
+        var(--accent);
+      color: #fff5ed;
+      padding: 24px;
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      right: -70px;
+      top: -60px;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .hero-subtitle {
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      font-size: 0.72rem;
+      color: rgba(255, 237, 223, 0.76);
+      margin-bottom: 12px;
+    }
+
+    .badge-soft {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent-deep);
+      font-weight: 600;
+      font-size: 0.8rem;
+    }
+
+    .detail-nav {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .detail-nav-meta {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .detail-nav-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .nav-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-width: 140px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(125, 53, 22, 0.18);
+      background: #fff;
+      color: var(--accent-deep);
+      text-decoration: none;
+      font-weight: 600;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .nav-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(105, 73, 47, 0.1);
+      border-color: rgba(179, 86, 44, 0.28);
+    }
+
+    .nav-button.is-disabled,
+    .nav-button.is-disabled:hover {
+      opacity: 0.45;
+      pointer-events: none;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .status-pass {
+      color: #1f7a48;
+    }
+
+    .status-fail {
+      color: #b02a37;
+    }
+
+    .step-image {
+      width: 100%;
+      min-height: 420px;
+      border-radius: 24px;
+      border: 1px solid rgba(92, 76, 59, 0.12);
+      box-shadow: 0 16px 32px rgba(55, 39, 28, 0.12);
+      object-fit: contain;
+      background: #fff;
+      cursor: zoom-in;
+    }
+
+    .preview-link {
+      border: 0;
+      background: transparent;
+      padding: 0;
+      width: 100%;
+    }
+
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(20, 14, 10, 0.78);
+      backdrop-filter: blur(8px);
+      z-index: 9999;
+    }
+
+    .lightbox.is-open {
+      display: flex;
+    }
+
+    .lightbox-dialog {
+      position: relative;
+      width: min(94vw, 1500px);
+      max-height: 92vh;
+      padding: 20px;
+      border-radius: 24px;
+      background: rgba(255, 248, 242, 0.98);
+      box-shadow: 0 28px 80px rgba(0, 0, 0, 0.28);
+      overflow: auto;
+    }
+
+    .lightbox-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin: 0 56px 16px 0;
+    }
+
+    .tool-button,
+    .color-swatch,
+    .size-select {
+      border: 1px solid rgba(92, 76, 59, 0.18);
+      border-radius: 999px;
+      background: #fff;
+      color: var(--ink);
+      font: inherit;
+      padding: 9px 14px;
+    }
+
+    .tool-button.active {
+      background: var(--accent);
+      color: #fff7ef;
+      border-color: var(--accent);
+    }
+
+    .color-swatch {
+      width: 36px;
+      height: 36px;
+      padding: 0;
+    }
+
+    .size-select {
+      border-radius: 14px;
+    }
+
+    .lightbox-stage {
+      position: relative;
+    }
+
+    .lightbox-image,
+    .lightbox-canvas {
+      display: block;
+      width: 100%;
+      max-height: calc(92vh - 40px);
+      border-radius: 18px;
+    }
+
+    .lightbox-image {
+      object-fit: contain;
+      background: #fff;
+    }
+
+    .lightbox-canvas {
+      position: absolute;
+      inset: 0;
+      background: transparent;
+      cursor: crosshair;
+      z-index: 2;
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 42px;
+      height: 42px;
+      border: 0;
+      border-radius: 999px;
+      background: rgba(45, 36, 28, 0.9);
+      color: #fff;
+      font-size: 1.4rem;
+      line-height: 1;
+      cursor: pointer;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    .empty-state {
+      border: 1px dashed rgba(92, 76, 59, 0.16);
+      border-radius: 20px;
+      padding: 18px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.55);
+    }
+  </style>
+</head>
+<body>
+  <div class="container app-shell">
+    <div class="surface-card">
+      <a id="backLink" class="back-link" href="index.html">&larr; Back to Dashboard</a>
+      <div class="hero-card">
+        <div class="hero-subtitle">Step Detail</div>
+        <h1 id="detailTitle">Loading...</h1>
+        <p id="detailSubtitle">Preparing screenshot preview.</p>
+      </div>
+
+      <div id="detailNavigation"></div>
+      <div id="detailContent"></div>
+    </div>
+  </div>
+
+  <div id="imageLightbox" class="lightbox" aria-hidden="true">
+    <div class="lightbox-dialog" role="dialog" aria-modal="true" aria-label="Screenshot preview">
+      <button id="lightboxClose" class="lightbox-close" type="button" aria-label="Close screenshot preview">&times;</button>
+      <div class="lightbox-toolbar">
+        <button id="drawTool" class="tool-button active" type="button">Draw</button>
+        <button id="eraseTool" class="tool-button" type="button">Erase</button>
+        <button id="clearMarkup" class="tool-button" type="button">Clear</button>
+        <button id="downloadMarkup" class="tool-button" type="button">Save Markup</button>
+        <input id="colorPicker" class="color-swatch" type="color" value="#ff3b30" aria-label="Markup color">
+        <select id="brushSize" class="size-select" aria-label="Brush size">
+          <option value="3">Thin</option>
+          <option value="6" selected>Medium</option>
+          <option value="10">Bold</option>
+        </select>
+      </div>
+      <div class="lightbox-stage">
+        <img id="lightboxImage" class="lightbox-image" alt="Expanded screenshot preview">
+        <canvas id="lightboxCanvas" class="lightbox-canvas"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function titleize(text) {
+      return text
+        .replace(/[_-]+/g, " ")
+        .trim()
+        .replace(/\b\w/g, char => char.toUpperCase());
+    }
+
+    function formatModuleName(name) {
+      return titleize(name);
+    }
+
+    function getStepLabel(step) {
+      return step.description && String(step.description).trim()
+        ? step.description
+        : `Step ${step.step}`;
+    }
+
+    function parseImages(imageValue) {
+      try {
+        const parsed = JSON.parse(imageValue);
+        return Array.isArray(parsed) ? parsed : [imageValue];
+      } catch (error) {
+        return imageValue ? [imageValue] : [];
+      }
+    }
+
+    function getPreferredImage(images) {
+      if (!images.length) {
+        return "";
+      }
+
+      return images.length > 1 ? images[1] : images[0];
+    }
+
+    function buildScreenshotUrl(imagePath) {
+      return `../${imagePath}?v=${Date.now()}`;
+    }
+
+    function buildDetailUrl(moduleId, stepNumber, sectionName) {
+      const params = new URLSearchParams({
+        module_id: moduleId,
+        step: stepNumber,
+      });
+
+      if (sectionName) {
+        params.set("section", sectionName);
+      }
+
+      return `detail.html?${params.toString()}`;
+    }
+
+    function setupLightbox() {
+      const lightbox = document.getElementById("imageLightbox");
+      const lightboxImage = document.getElementById("lightboxImage");
+      const lightboxCanvas = document.getElementById("lightboxCanvas");
+      const lightboxClose = document.getElementById("lightboxClose");
+      const drawTool = document.getElementById("drawTool");
+      const eraseTool = document.getElementById("eraseTool");
+      const clearMarkup = document.getElementById("clearMarkup");
+      const downloadMarkup = document.getElementById("downloadMarkup");
+      const colorPicker = document.getElementById("colorPicker");
+      const brushSize = document.getElementById("brushSize");
+      const ctx = lightboxCanvas.getContext("2d");
+
+      let isDrawing = false;
+      let currentTool = "draw";
+      let currentImagePath = "";
+
+      function resizeCanvasToImage() {
+        lightboxCanvas.width = lightboxImage.clientWidth;
+        lightboxCanvas.height = lightboxImage.clientHeight;
+        lightboxCanvas.style.width = `${lightboxImage.clientWidth}px`;
+        lightboxCanvas.style.height = `${lightboxImage.clientHeight}px`;
+      }
+
+      function setTool(tool) {
+        currentTool = tool;
+        drawTool.classList.toggle("active", tool === "draw");
+        eraseTool.classList.toggle("active", tool === "erase");
+      }
+
+      function getPoint(event) {
+        const rect = lightboxCanvas.getBoundingClientRect();
+        const source = event.touches ? event.touches[0] : event;
+        return {
+          x: source.clientX - rect.left,
+          y: source.clientY - rect.top,
+        };
+      }
+
+      function startDrawing(event) {
+        event.preventDefault();
+        isDrawing = true;
+        const point = getPoint(event);
+        ctx.beginPath();
+        ctx.moveTo(point.x, point.y);
+      }
+
+      function draw(event) {
+        if (!isDrawing) {
+          return;
+        }
+
+        event.preventDefault();
+        const point = getPoint(event);
+        ctx.lineCap = "round";
+        ctx.lineJoin = "round";
+        ctx.lineWidth = Number(brushSize.value);
+
+        if (currentTool === "erase") {
+          ctx.globalCompositeOperation = "destination-out";
+        } else {
+          ctx.globalCompositeOperation = "source-over";
+          ctx.strokeStyle = colorPicker.value;
+        }
+
+        ctx.lineTo(point.x, point.y);
+        ctx.stroke();
+      }
+
+      function stopDrawing() {
+        isDrawing = false;
+        ctx.beginPath();
+      }
+
+      function clearCanvas() {
+        ctx.clearRect(0, 0, lightboxCanvas.width, lightboxCanvas.height);
+      }
+
+      function downloadAnnotatedImage() {
+        if (!currentImagePath) {
+          return;
+        }
+
+        const exportCanvas = document.createElement("canvas");
+        exportCanvas.width = lightboxImage.naturalWidth;
+        exportCanvas.height = lightboxImage.naturalHeight;
+        const exportCtx = exportCanvas.getContext("2d");
+
+        exportCtx.drawImage(lightboxImage, 0, 0, exportCanvas.width, exportCanvas.height);
+        exportCtx.drawImage(
+          lightboxCanvas,
+          0,
+          0,
+          lightboxCanvas.width,
+          lightboxCanvas.height,
+          0,
+          0,
+          exportCanvas.width,
+          exportCanvas.height
+        );
+
+        const link = document.createElement("a");
+        link.href = exportCanvas.toDataURL("image/png");
+        link.download = "marked-screenshot.png";
+        link.click();
+      }
+
+      function closeLightbox() {
+        lightbox.classList.remove("is-open");
+        lightbox.setAttribute("aria-hidden", "true");
+        lightboxImage.removeAttribute("src");
+        currentImagePath = "";
+        clearCanvas();
+      }
+
+      function openLightbox(imagePath, altText) {
+        currentImagePath = imagePath;
+        clearCanvas();
+        lightboxImage.src = imagePath;
+        lightboxImage.alt = altText;
+        lightbox.classList.add("is-open");
+        lightbox.setAttribute("aria-hidden", "false");
+      }
+
+      lightboxImage.addEventListener("load", () => {
+        resizeCanvasToImage();
+        clearCanvas();
+      });
+
+      window.addEventListener("resize", () => {
+        if (lightbox.classList.contains("is-open")) {
+          resizeCanvasToImage();
+        }
+      });
+
+      drawTool.addEventListener("click", () => setTool("draw"));
+      eraseTool.addEventListener("click", () => setTool("erase"));
+      clearMarkup.addEventListener("click", clearCanvas);
+      downloadMarkup.addEventListener("click", downloadAnnotatedImage);
+
+      lightboxCanvas.addEventListener("mousedown", startDrawing);
+      lightboxCanvas.addEventListener("mousemove", draw);
+      lightboxCanvas.addEventListener("mouseup", stopDrawing);
+      lightboxCanvas.addEventListener("mouseleave", stopDrawing);
+      lightboxCanvas.addEventListener("touchstart", startDrawing, { passive: false });
+      lightboxCanvas.addEventListener("touchmove", draw, { passive: false });
+      lightboxCanvas.addEventListener("touchend", stopDrawing);
+
+      lightbox.addEventListener("click", event => {
+        if (event.target === lightbox) {
+          closeLightbox();
+        }
+      });
+
+      lightboxClose.addEventListener("click", closeLightbox);
+
+      document.addEventListener("keydown", event => {
+        if (event.key === "Escape" && lightbox.classList.contains("is-open")) {
+          closeLightbox();
+        }
+      });
+
+      return { openLightbox };
+    }
+
+    async function loadDetailPage() {
+      const API_BASE = "/Manual Book Sambungin/website/api";
+      const params = new URLSearchParams(window.location.search);
+      const moduleId = params.get("module_id");
+      const stepNumber = Number(params.get("step") || "1");
+      const sectionName = params.get("section");
+      const backLink = document.getElementById("backLink");
+      const detailNavigation = document.getElementById("detailNavigation");
+      const detailTitle = document.getElementById("detailTitle");
+      const detailSubtitle = document.getElementById("detailSubtitle");
+      const detailContent = document.getElementById("detailContent");
+      const { openLightbox } = setupLightbox();
+
+      if (moduleId) {
+        const backParams = new URLSearchParams({ module_id: moduleId });
+        if (sectionName) {
+          backParams.set("section", sectionName);
+        }
+        backLink.href = `index.html?${backParams.toString()}`;
+      }
+
+      if (!moduleId) {
+        detailContent.innerHTML = '<div class="empty-state">Missing module information.</div>';
+        return;
+      }
+
+      const modules = await fetch(`${API_BASE}/modules`).then(res => res.json());
+      const module = modules.find(item => String(item.id) === String(moduleId));
+      const steps = await fetch(`${API_BASE}/modules/${moduleId}/steps`).then(res => res.json());
+      const step = steps.find(item => Number(item.step) === stepNumber) || steps[0];
+
+      if (!module || !step) {
+        detailContent.innerHTML = '<div class="empty-state">Step detail was not found.</div>';
+        return;
+      }
+
+      const images = parseImages(step.image);
+      const selectedImage = getPreferredImage(images);
+      const imagePath = selectedImage ? buildScreenshotUrl(selectedImage) : "";
+      const statusClass = step.status === "PASS" ? "status-pass" : "status-fail";
+      const currentIndex = steps.findIndex(item => Number(item.step) === Number(step.step));
+      const previousStep = currentIndex > 0 ? steps[currentIndex - 1] : null;
+      const nextStep = currentIndex >= 0 && currentIndex < steps.length - 1 ? steps[currentIndex + 1] : null;
+
+      detailTitle.textContent = formatModuleName(module.name);
+      detailSubtitle.textContent = `Step ${step.step} • ${getStepLabel(step)}`;
+      detailNavigation.innerHTML = `
+        <div class="detail-nav">
+          <div class="detail-nav-meta">Showing step ${step.step} of ${steps.length}</div>
+          <div class="detail-nav-actions">
+            <a
+              class="nav-button ${previousStep ? "" : "is-disabled"}"
+              href="${previousStep ? buildDetailUrl(moduleId, previousStep.step, sectionName) : "#"}"
+            >
+              &larr; Previous Step
+            </a>
+            <a
+              class="nav-button ${nextStep ? "" : "is-disabled"}"
+              href="${nextStep ? buildDetailUrl(moduleId, nextStep.step, sectionName) : "#"}"
+            >
+              Next Step &rarr;
+            </a>
+          </div>
+        </div>
+      `;
+
+      detailContent.innerHTML = `
+        <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+          <span class="badge-soft">${formatModuleName(module.name)}</span>
+          <span class="badge-soft ${statusClass}">Step ${step.step} • ${step.status}</span>
+        </div>
+        <h2 class="h3 mb-3">${getStepLabel(step)}</h2>
+      `;
+
+      if (imagePath) {
+        const imageButton = document.createElement("button");
+        imageButton.type = "button";
+        imageButton.className = "preview-link";
+        imageButton.onclick = () => openLightbox(imagePath, `${module.name} step ${step.step}`);
+
+        const image = document.createElement("img");
+        image.src = imagePath;
+        image.alt = `${module.name} step ${step.step}`;
+        image.className = "step-image";
+
+        imageButton.appendChild(image);
+        detailContent.appendChild(imageButton);
+      } else {
+        const empty = document.createElement("div");
+        empty.className = "empty-state mt-3";
+        empty.textContent = "No screenshot is available for this step yet.";
+        detailContent.appendChild(empty);
+      }
+    }
+
+    loadDetailPage().catch(error => {
+      const detailContent = document.getElementById("detailContent");
+      detailContent.innerHTML = `
+        <div class="empty-state">
+          Failed to load step detail.<br>
+          <small>${error.message}</small>
+        </div>
+      `;
+    });
+  </script>
+</body>
+</html>

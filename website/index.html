@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Manual Book Dashboard</title>
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
+    crossorigin="anonymous"
+  >
+  <style>
+    :root {
+      --app-bg: #f4efe6;
+      --panel-bg: rgba(255, 255, 255, 0.92);
+      --panel-border: rgba(92, 76, 59, 0.12);
+      --ink: #2d241c;
+      --muted: #756657;
+      --accent: #b3562c;
+      --accent-deep: #7d3516;
+      --accent-soft: #f2dcc6;
+      --shadow: 0 22px 55px rgba(75, 49, 32, 0.12);
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(255, 222, 185, 0.95), transparent 34%),
+        radial-gradient(circle at bottom right, rgba(188, 220, 201, 0.55), transparent 28%),
+        linear-gradient(135deg, #f8f1e7 0%, #efe3d3 52%, #f3ece3 100%);
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .app-shell {
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    .app-panel {
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      overflow: hidden;
+    }
+
+    .app-sidebar {
+      min-height: calc(100vh - 48px);
+      background:
+        linear-gradient(180deg, rgba(76, 50, 34, 0.98), rgba(43, 29, 20, 0.96)),
+        #2b1d14;
+      color: #f9f2ea;
+    }
+
+    .brand-block {
+      padding: 28px 24px 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .brand-kicker {
+      font-size: 0.76rem;
+      letter-spacing: 0.24em;
+      text-transform: uppercase;
+      color: rgba(255, 241, 228, 0.7);
+      margin-bottom: 12px;
+    }
+
+    .brand-title {
+      font-size: 1.8rem;
+      line-height: 1.1;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    .brand-copy {
+      margin-top: 14px;
+      color: rgba(255, 241, 228, 0.72);
+      font-size: 0.95rem;
+    }
+
+    .section-list {
+      padding: 20px 16px 28px;
+      max-height: calc(100vh - 250px);
+      overflow-y: auto;
+    }
+
+    .section-button {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: inherit;
+      text-align: left;
+      padding: 14px 16px;
+      border-radius: 18px;
+      margin-bottom: 10px;
+      transition: transform 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .section-button:hover,
+    .section-button.active {
+      background: rgba(255, 255, 255, 0.12);
+      transform: translateX(3px);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+    }
+
+    .section-label {
+      display: block;
+      font-size: 1rem;
+      font-weight: 600;
+    }
+
+    .section-meta {
+      display: block;
+      margin-top: 5px;
+      font-size: 0.84rem;
+      color: rgba(255, 241, 228, 0.7);
+    }
+
+    .main-area {
+      padding: 26px;
+    }
+
+    .hero-card {
+      border-radius: 24px;
+      background:
+        linear-gradient(135deg, rgba(179, 86, 44, 0.97), rgba(104, 39, 18, 0.97)),
+        var(--accent);
+      color: #fff5ed;
+      padding: 24px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      right: -70px;
+      top: -60px;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .hero-subtitle {
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      font-size: 0.72rem;
+      color: rgba(255, 237, 223, 0.76);
+      margin-bottom: 12px;
+    }
+
+    .hero-card h1 {
+      font-size: clamp(1.9rem, 2.6vw, 2.8rem);
+      line-height: 1.05;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-card p {
+      max-width: 60ch;
+      margin: 0;
+      color: rgba(255, 242, 232, 0.86);
+      position: relative;
+      z-index: 1;
+    }
+
+    .content-grid {
+      margin-top: 20px;
+    }
+
+    .surface-card {
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(92, 76, 59, 0.1);
+      border-radius: 24px;
+      padding: 20px;
+      height: 100%;
+      box-shadow: 0 16px 35px rgba(90, 68, 45, 0.08);
+    }
+
+    .scroll-card {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .section-heading {
+      font-size: 0.85rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent-deep);
+      margin-bottom: 10px;
+      font-weight: 800;
+    }
+
+    .panel-list {
+      flex: 1;
+      min-height: 0;
+      max-height: 62vh;
+      overflow-y: auto;
+      padding-right: 6px;
+    }
+
+    .search-input {
+      width: 100%;
+      border: 1px solid rgba(179, 86, 44, 0.18);
+      border-radius: 18px;
+      padding: 14px 16px 14px 50px;
+      background: #fffdf9;
+      color: var(--ink);
+      font-size: 0.98rem;
+      font-weight: 500;
+      box-shadow:
+        0 10px 24px rgba(105, 73, 47, 0.08),
+        inset 0 1px 2px rgba(92, 76, 59, 0.05);
+    }
+
+    .search-input:focus {
+      outline: none;
+      border-color: rgba(179, 86, 44, 0.42);
+      box-shadow:
+        0 0 0 5px rgba(179, 86, 44, 0.1),
+        0 12px 26px rgba(105, 73, 47, 0.1),
+        inset 0 1px 2px rgba(92, 76, 59, 0.05);
+    }
+
+    .search-shell {
+      margin-top: 12px;
+      margin-bottom: 4px;
+    }
+
+    .search-label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--accent-deep);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .search-box {
+      position: relative;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--accent);
+      font-size: 1.05rem;
+      pointer-events: none;
+    }
+
+    .panel-list::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .panel-list::-webkit-scrollbar-thumb {
+      background: rgba(125, 53, 22, 0.25);
+      border-radius: 999px;
+    }
+
+    .panel-list::-webkit-scrollbar-track {
+      background: rgba(92, 76, 59, 0.06);
+      border-radius: 999px;
+    }
+
+    .testcase-button,
+    .step-button {
+      display: block;
+      width: 100%;
+      border: 0;
+      text-align: left;
+      border-radius: 18px;
+      padding: 14px 16px;
+      background: #fff;
+      margin-bottom: 12px;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+      box-shadow: inset 0 0 0 1px rgba(92, 76, 59, 0.08);
+    }
+
+    .testcase-button:hover,
+    .testcase-button.active,
+    .step-button:hover,
+    .step-button.active {
+      transform: translateY(-2px);
+      box-shadow:
+        0 14px 24px rgba(105, 73, 47, 0.1),
+        inset 0 0 0 1px rgba(179, 86, 44, 0.24);
+    }
+
+    .testcase-title,
+    .step-title {
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .step-title {
+      font-size: 1rem;
+      line-height: 1.45;
+    }
+
+    .testcase-meta,
+    .step-meta {
+      display: block;
+      margin-top: 5px;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .failed-count {
+      color: #b02a37;
+      font-weight: 700;
+    }
+
+    .panel-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 14px;
+      margin-bottom: 4px;
+    }
+
+    .panel-toolbar-copy {
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.45;
+      flex: 1 1 220px;
+    }
+
+    .edit-button {
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-weight: 600;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+    }
+
+    .edit-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(105, 73, 47, 0.1);
+    }
+
+    .edit-button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .edit-button-primary {
+      background: var(--accent);
+      color: #fff7ef;
+    }
+
+    .edit-button-secondary {
+      background: #fff;
+      color: var(--accent-deep);
+      box-shadow: inset 0 0 0 1px rgba(179, 86, 44, 0.16);
+    }
+
+    .edit-button-danger {
+      background: #fff1ee;
+      color: #a8352c;
+      box-shadow: inset 0 0 0 1px rgba(168, 53, 44, 0.12);
+    }
+
+    .testcase-button.is-editing {
+      box-shadow:
+        0 14px 24px rgba(105, 73, 47, 0.12),
+        inset 0 0 0 1px rgba(179, 86, 44, 0.28);
+    }
+
+    .testcase-button.is-editing::after {
+      content: "Edit";
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 10px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent-deep);
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .modal-shell {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(22, 15, 11, 0.6);
+      backdrop-filter: blur(6px);
+      z-index: 9998;
+    }
+
+    .modal-shell.is-open {
+      display: flex;
+    }
+
+    .modal-card {
+      width: min(100%, 620px);
+      background: rgba(255, 249, 244, 0.98);
+      border-radius: 28px;
+      border: 1px solid rgba(179, 86, 44, 0.16);
+      box-shadow: 0 28px 80px rgba(0, 0, 0, 0.22);
+      padding: 22px;
+    }
+
+    .modal-kicker {
+      font-size: 0.78rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent-deep);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .modal-title {
+      font-size: 1.5rem;
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+
+    .modal-copy {
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .modal-section {
+      padding: 16px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.82);
+      border: 1px solid rgba(92, 76, 59, 0.08);
+      margin-bottom: 14px;
+    }
+
+    .modal-section-title {
+      font-size: 0.84rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent-deep);
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+
+    .edit-input {
+      width: 100%;
+      border: 1px solid rgba(92, 76, 59, 0.14);
+      border-radius: 16px;
+      padding: 12px 14px;
+      background: #fff;
+      color: var(--ink);
+    }
+
+    .edit-input:focus {
+      outline: none;
+      border-color: rgba(179, 86, 44, 0.34);
+      box-shadow: 0 0 0 4px rgba(179, 86, 44, 0.08);
+    }
+
+    .modal-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      width: 40px;
+      height: 40px;
+      border: 0;
+      border-radius: 999px;
+      background: rgba(45, 36, 28, 0.9);
+      color: #fff;
+      font-size: 1.3rem;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .modal-card-wrap {
+      position: relative;
+    }
+
+    .verify-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.45;
+    }
+
+    .verify-row input {
+      margin-top: 3px;
+    }
+
+    .edit-status {
+      min-height: 1.3rem;
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-top: 10px;
+    }
+
+    .edit-status.is-success {
+      color: #1f7a48;
+    }
+
+    .edit-status.is-error {
+      color: #b02a37;
+    }
+
+    .empty-state {
+      border: 1px dashed rgba(92, 76, 59, 0.16);
+      border-radius: 20px;
+      padding: 18px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.55);
+    }
+
+    @media (max-width: 991.98px) {
+      .app-shell {
+        padding: 0;
+      }
+
+      .app-panel,
+      .app-sidebar {
+        border-radius: 0;
+      }
+
+      .app-sidebar {
+        min-height: auto;
+      }
+
+      .section-list {
+        max-height: none;
+      }
+
+      .main-area {
+        padding: 18px;
+      }
+
+      .panel-list {
+        max-height: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container-fluid app-shell">
+    <div class="row g-0 app-panel">
+      <aside class="col-lg-2 app-sidebar">
+        <div class="brand-block">
+          <div class="brand-kicker">Manual Book</div>
+          <h2 class="brand-title">Manual Book Customer Web</h2>
+          <p class="brand-copy">
+            Browse the main pages from the sidebar, then open the available test cases and review each recorded step.
+          </p>
+        </div>
+        <div class="section-list" id="sectionMenu"></div>
+      </aside>
+
+      <main class="col-lg-10 main-area">
+        <section class="hero-card">
+          <div class="hero-subtitle">Interface Overview</div>
+          <h1 id="heroTitle">Organized by page section</h1>
+          <p id="heroDescription">
+            Select a page section from the left sidebar to show its related test cases, then choose a step to open the detail page.
+          </p>
+        </section>
+
+        <div class="row g-4 content-grid">
+          <section class="col-lg-5">
+            <div class="surface-card scroll-card">
+              <div class="section-heading">Test Cases</div>
+              <div class="search-shell">
+                <label class="search-label" for="testcaseSearch">Find Test Case</label>
+                <div class="search-box">
+                  <span class="search-icon" aria-hidden="true">&#128269;</span>
+                  <input
+                    id="testcaseSearch"
+                    class="search-input"
+                    type="search"
+                    placeholder="Type a test case name..."
+                    aria-label="Search test case"
+                  >
+                </div>
+              </div>
+              <div class="panel-toolbar">
+                <div id="editModeCopy" class="panel-toolbar-copy">Open a test case to view its steps, or switch to edit mode to manage names.</div>
+                <button id="toggleEditModeButton" class="edit-button edit-button-secondary" type="button">Edit Test Case</button>
+              </div>
+              <div id="testcaseList" class="mt-3 panel-list"></div>
+            </div>
+          </section>
+
+          <section class="col-lg-7">
+            <div class="surface-card scroll-card">
+              <div class="section-heading">Steps</div>
+              <div id="stepList" class="mt-3 panel-list"></div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <div id="editModal" class="modal-shell" aria-hidden="true">
+    <div class="modal-card-wrap">
+      <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+        <button id="closeEditModal" class="modal-close" type="button" aria-label="Close edit dialog">&times;</button>
+        <div class="modal-kicker">Edit Test Case</div>
+        <h2 id="editModalTitle" class="modal-title">Loading...</h2>
+        <p class="modal-copy">Rename the selected test case or delete it from the database after verification.</p>
+
+        <div class="modal-section">
+          <div class="modal-section-title">Rename</div>
+          <input id="editTestcaseName" class="edit-input" type="text" aria-label="Edit test case name">
+          <div class="modal-actions">
+            <button id="renameTestcaseButton" class="edit-button edit-button-primary" type="button">Save Rename</button>
+          </div>
+        </div>
+
+        <div class="modal-section">
+          <div class="modal-section-title">Delete</div>
+          <label class="verify-row" for="deleteVerification">
+            <input id="deleteVerification" type="checkbox">
+            <span>I understand this will delete the test case and all of its recorded steps from the database.</span>
+          </label>
+          <div class="modal-actions">
+            <button id="deleteTestcaseButton" class="edit-button edit-button-danger" type="button">Delete Test Case</button>
+          </div>
+        </div>
+
+        <div id="editStatus" class="edit-status"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function titleize(text) {
+      return text
+        .replace(/[_-]+/g, " ")
+        .trim()
+        .replace(/\b\w/g, char => char.toUpperCase());
+    }
+
+    function formatModuleName(name) {
+      return titleize(name);
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function inferSectionName(moduleName) {
+      const normalized = moduleName.toLowerCase();
+      const pageMatch = normalized.match(/halaman_(.+)$/);
+
+      if (pageMatch) {
+        return `${titleize(pageMatch[1])} Page`;
+      }
+
+      if (normalized.includes("login")) {
+        return "Authentication";
+      }
+
+      if (normalized.includes("home")) {
+        return "Home Page";
+      }
+
+      if (normalized.includes("about")) {
+        return "About Us Page";
+      }
+
+      if (normalized.includes("portfolio")) {
+        return "Portfolio Page";
+      }
+
+      if (normalized.includes("product")) {
+        return "Product Page";
+      }
+      
+      if (normalized.includes("news")) {
+        return "News Page";
+      }
+
+      if (normalized.includes("contact")) {
+        return "Contact Page";
+      }
+
+      if (normalized.includes("event")) {
+        return "Event Page";
+      }
+      
+      if (normalized.includes("profile")) {
+        return "Profile Page";
+      }
+
+      return "Other";
+    }
+
+    function countFailedSteps(steps) {
+      return steps.filter(step => step.status === "FAIL").length;
+    }
+
+    function formatTestCaseMeta(steps) {
+      const failed = countFailedSteps(steps);
+      const stepLabel = `${steps.length} step${steps.length === 1 ? "" : "s"}`;
+
+      if (failed > 0) {
+        return `${stepLabel} • <span class="failed-count">${failed} failed</span>`;
+      }
+
+      return stepLabel;
+    }
+
+    function inferActionGroup(testcaseName) {
+      const name = testcaseName.toLowerCase();
+
+      if (name.includes("tambah") || name.includes("create") || name.includes("add")) {
+        return "Tambah";
+      }
+
+      if (name.includes("edit") || name.includes("update") || name.includes("ubah")) {
+        return "Edit";
+      }
+
+      if (name.includes("hapus") || name.includes("delete") || name.includes("remove")) {
+        return "Hapus";
+      }
+
+      return "General";
+    }
+
+    function getStepLabel(step) {
+      return step.description && String(step.description).trim()
+        ? step.description
+        : `Step ${step.step}`;
+    }
+
+    function buildDetailUrl(moduleId, stepIndex, sectionName) {
+      const params = new URLSearchParams({
+        module_id: moduleId,
+        step: stepIndex,
+      });
+
+      if (sectionName) {
+        params.set("section", sectionName);
+      }
+
+      return `detail.html?${params.toString()}`;
+    }
+
+    async function loadManualBook() {
+      const API_BASE = "/Manual Book Sambungin/website/api";
+      const sectionMenu = document.getElementById("sectionMenu");
+      const testcaseList = document.getElementById("testcaseList");
+      const testcaseSearch = document.getElementById("testcaseSearch");
+      const toggleEditModeButton = document.getElementById("toggleEditModeButton");
+      const editModeCopy = document.getElementById("editModeCopy");
+      const stepList = document.getElementById("stepList");
+      const heroTitle = document.getElementById("heroTitle");
+      const heroDescription = document.getElementById("heroDescription");
+      const editModal = document.getElementById("editModal");
+      const closeEditModal = document.getElementById("closeEditModal");
+      const editModalTitle = document.getElementById("editModalTitle");
+      const editTestcaseName = document.getElementById("editTestcaseName");
+      const deleteVerification = document.getElementById("deleteVerification");
+      const renameTestcaseButton = document.getElementById("renameTestcaseButton");
+      const deleteTestcaseButton = document.getElementById("deleteTestcaseButton");
+
+      const params = new URLSearchParams(window.location.search);
+      const requestedSection = params.get("section");
+      const requestedModuleId = params.get("module_id");
+      const modules = await fetch(`${API_BASE}/modules`).then(res => res.json());
+      const modulesWithSteps = await Promise.all(
+        modules.map(async module => {
+          const steps = await fetch(`${API_BASE}/modules/${module.id}/steps`).then(res => res.json());
+          return { ...module, steps, section: inferSectionName(module.name) };
+        })
+      );
+
+      const groupedSections = modulesWithSteps.reduce((accumulator, module) => {
+        if (!accumulator[module.section]) {
+          accumulator[module.section] = [];
+        }
+
+        accumulator[module.section].push(module);
+        return accumulator;
+      }, {});
+
+      const sectionNames = Object.keys(groupedSections).sort((left, right) => left.localeCompare(right));
+
+      let activeSection = groupedSections[requestedSection] ? requestedSection : (sectionNames[0] || "");
+      let activeModuleId = requestedModuleId
+        ? Number(requestedModuleId)
+        : (groupedSections[activeSection]?.[0]?.id || null);
+      let searchTerm = "";
+      let isEditMode = false;
+      let editingModuleId = null;
+
+      if (activeModuleId) {
+        const selectedModule = modulesWithSteps.find(module => module.id === activeModuleId);
+        if (selectedModule) {
+          activeSection = selectedModule.section;
+        }
+      }
+
+      function renderSections() {
+        sectionMenu.innerHTML = "";
+
+        if (!sectionNames.length) {
+          sectionMenu.innerHTML = '<div class="empty-state">No recorded sections yet.</div>';
+          return;
+        }
+
+        sectionNames.forEach(sectionName => {
+          const button = document.createElement("button");
+          const totalModules = groupedSections[sectionName].length;
+          const totalSteps = groupedSections[sectionName].reduce((sum, module) => sum + module.steps.length, 0);
+
+          button.className = `section-button ${sectionName === activeSection ? "active" : ""}`;
+          button.innerHTML = `
+            <span class="section-label">${sectionName}</span>
+            <span class="section-meta">${totalModules} test case${totalModules > 1 ? "s" : ""} • ${totalSteps} step${totalSteps > 1 ? "s" : ""}</span>
+          `;
+          button.onclick = () => {
+            activeSection = sectionName;
+            activeModuleId = groupedSections[sectionName][0]?.id || null;
+            renderApp();
+          };
+
+          sectionMenu.appendChild(button);
+        });
+      }
+
+      function renderTestCases() {
+        testcaseList.innerHTML = "";
+
+        const modulesInSection = groupedSections[activeSection] || [];
+        const normalizedSearch = searchTerm.trim().toLowerCase();
+        const filteredModules = normalizedSearch
+          ? modulesInSection.filter(module => formatModuleName(module.name).toLowerCase().includes(normalizedSearch))
+          : modulesInSection;
+
+        if (!modulesInSection.length) {
+          testcaseList.innerHTML = '<div class="empty-state">No test cases found in this section.</div>';
+          return;
+        }
+
+        if (!filteredModules.length) {
+          testcaseList.innerHTML = '<div class="empty-state">No test cases match your search.</div>';
+          return;
+        }
+
+        // Grouping logic
+        const grouped = {
+          Tambah: [],
+          Edit: [],
+          Hapus: [],
+          General: []
+        };
+
+        filteredModules.forEach(module => {
+          const group = inferActionGroup(module.name);
+          grouped[group].push(module);
+        });
+
+        Object.keys(grouped).forEach(groupName => {
+          if (!grouped[groupName].length) return;
+
+          const header = document.createElement("div");
+          header.className = "section-heading";
+          header.style.marginTop = "10px";
+          header.textContent = groupName;
+          testcaseList.appendChild(header);
+
+          grouped[groupName].forEach(module => {
+            const button = document.createElement("button");
+
+            button.className = `testcase-button ${module.id === activeModuleId ? "active" : ""} ${isEditMode ? "is-editing" : ""}`;
+
+            const groupLabel = inferActionGroup(module.name);
+
+            button.innerHTML = `
+              <span class="testcase-title">${formatModuleName(module.name)}</span>
+              <span class="testcase-meta">
+                <strong>${groupLabel}</strong> • ${formatTestCaseMeta(module.steps)}
+              </span>
+            `;
+
+            button.onclick = () => {
+              if (isEditMode) {
+                openEditModal(module.id);
+                return;
+              }
+
+              activeModuleId = module.id;
+              renderApp();
+            };
+
+            testcaseList.appendChild(button);
+          });
+        });
+      }
+
+      function setEditStatus(message = "", type = "") {
+        const statusElement = document.getElementById("editStatus");
+
+        if (!statusElement) {
+          return;
+        }
+
+        statusElement.textContent = message;
+        statusElement.className = "edit-status";
+
+        if (type === "success") {
+          statusElement.classList.add("is-success");
+        }
+
+        if (type === "error") {
+          statusElement.classList.add("is-error");
+        }
+      }
+
+      function buildReloadUrl(nextModuleId = null, nextSection = null) {
+        const params = new URLSearchParams();
+
+        if (nextSection) {
+          params.set("section", nextSection);
+        }
+
+        if (nextModuleId) {
+          params.set("module_id", nextModuleId);
+        }
+
+        const query = params.toString();
+        return query ? `index.html?${query}` : "index.html";
+      }
+
+      function getEditingModule() {
+        return modulesWithSteps.find(module => module.id === editingModuleId) || null;
+      }
+
+      function closeModal() {
+        editModal.classList.remove("is-open");
+        editModal.setAttribute("aria-hidden", "true");
+        editingModuleId = null;
+        editTestcaseName.value = "";
+        deleteVerification.checked = false;
+        renameTestcaseButton.disabled = false;
+        deleteTestcaseButton.disabled = false;
+        setEditStatus("");
+      }
+
+      function openEditModal(moduleId) {
+        const module = modulesWithSteps.find(item => item.id === moduleId);
+
+        if (!module) {
+          return;
+        }
+
+        editingModuleId = moduleId;
+        editModalTitle.textContent = formatModuleName(module.name);
+        editTestcaseName.value = module.name;
+        deleteVerification.checked = false;
+        renameTestcaseButton.disabled = false;
+        deleteTestcaseButton.disabled = false;
+        setEditStatus("");
+        editModal.classList.add("is-open");
+        editModal.setAttribute("aria-hidden", "false");
+        editTestcaseName.focus();
+        editTestcaseName.select();
+      }
+
+      async function renameActiveModule() {
+        const activeModule = getEditingModule();
+
+        if (!activeModule) {
+          return;
+        }
+
+        const nextName = editTestcaseName.value.trim();
+
+        if (!nextName) {
+          setEditStatus("Test case name cannot be empty.", "error");
+          return;
+        }
+
+        renameTestcaseButton.disabled = true;
+        deleteTestcaseButton.disabled = true;
+        setEditStatus("Renaming test case...");
+
+        try {
+          const response = await fetch(`${API_BASE}/modules/${activeModule.id}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ name: nextName })
+          });
+          const result = await response.json();
+
+          if (!response.ok || !result.success) {
+            throw new Error(result.message || "Failed to rename test case.");
+          }
+
+          setEditStatus(result.message, "success");
+          window.location.href = buildReloadUrl(activeModule.id, inferSectionName(nextName));
+        } catch (error) {
+          setEditStatus(error.message, "error");
+          renameTestcaseButton.disabled = false;
+          deleteTestcaseButton.disabled = false;
+        }
+      }
+
+      async function deleteActiveModule() {
+        const activeModule = getEditingModule();
+
+        if (!activeModule) {
+          return;
+        }
+
+        if (!deleteVerification.checked) {
+          setEditStatus("Please verify deletion before continuing.", "error");
+          return;
+        }
+
+        renameTestcaseButton.disabled = true;
+        deleteTestcaseButton.disabled = true;
+        setEditStatus("Deleting test case...");
+
+        try {
+          const response = await fetch(`${API_BASE}/modules/${activeModule.id}`, {
+            method: "DELETE"
+          });
+          const result = await response.json();
+
+          if (!response.ok || !result.success) {
+            throw new Error(result.message || "Failed to delete test case.");
+          }
+
+          const modulesInSection = groupedSections[activeSection] || [];
+          const remainingModules = modulesInSection.filter(module => module.id !== activeModule.id);
+          const fallbackModuleId = remainingModules[0]?.id || null;
+          const fallbackSection = remainingModules.length ? activeSection : sectionNames.find(sectionName => {
+            if (sectionName === activeSection) {
+              return false;
+            }
+
+            return (groupedSections[sectionName] || []).length > 0;
+          }) || null;
+          const fallbackId = remainingModules.length
+            ? fallbackModuleId
+            : (fallbackSection ? groupedSections[fallbackSection][0]?.id || null : null);
+
+          setEditStatus(result.message, "success");
+          window.location.href = buildReloadUrl(fallbackId, fallbackSection);
+        } catch (error) {
+          setEditStatus(error.message, "error");
+          renameTestcaseButton.disabled = false;
+          deleteTestcaseButton.disabled = false;
+        }
+      }
+
+      function renderEditMode() {
+        toggleEditModeButton.textContent = isEditMode ? "Done Editing" : "Edit Test Case";
+        toggleEditModeButton.className = `edit-button ${isEditMode ? "edit-button-primary" : "edit-button-secondary"}`;
+        editModeCopy.textContent = isEditMode
+          ? "Click a test case card below to open the edit pop-up for rename or delete."
+          : "Open a test case to view its steps, or switch to edit mode to manage names.";
+      }
+
+      function renderSteps() {
+        stepList.innerHTML = "";
+
+        const modulesInSection = groupedSections[activeSection] || [];
+        const normalizedSearch = searchTerm.trim().toLowerCase();
+        const filteredModules = normalizedSearch
+          ? modulesInSection.filter(module => formatModuleName(module.name).toLowerCase().includes(normalizedSearch))
+          : modulesInSection;
+        const activeModule = filteredModules.find(module => module.id === activeModuleId);
+
+        if (!activeModule || !activeModule.steps.length) {
+          stepList.innerHTML = '<div class="empty-state">Select a test case to view its steps.</div>';
+          return;
+        }
+
+        activeModule.steps.forEach((step, index) => {
+          const statusClass = step.status === "PASS" ? "status-pass" : "status-fail";
+          const button = document.createElement("button");
+          const detailUrl = buildDetailUrl(activeModule.id, index + 1, activeSection);
+
+          button.className = "step-button";
+          button.innerHTML = `
+            <span class="step-title">${getStepLabel(step)}</span>
+            <span class="step-meta ${statusClass}">Step ${step.step} • ${step.status}</span>
+          `;
+          button.onclick = () => {
+            window.location.href = detailUrl;
+          };
+
+          stepList.appendChild(button);
+        });
+      }
+
+      function renderApp() {
+        const modulesInSection = groupedSections[activeSection] || [];
+        const normalizedSearch = searchTerm.trim().toLowerCase();
+        const filteredModules = normalizedSearch
+          ? modulesInSection.filter(module => formatModuleName(module.name).toLowerCase().includes(normalizedSearch))
+          : modulesInSection;
+
+        if (!filteredModules.some(module => module.id === activeModuleId)) {
+          activeModuleId = filteredModules[0]?.id || null;
+        }
+
+        const activeModule = filteredModules.find(module => module.id === activeModuleId) || null;
+
+        heroTitle.textContent = activeSection || "Manual Book";
+        heroDescription.textContent = activeModule
+          ? `${formatModuleName(activeModule.name)} contains ${activeModule.steps.length} recorded steps.`
+          : normalizedSearch
+            ? "No test case matches your search in this section."
+            : "Select a page section from the left sidebar to show its related test cases.";
+
+        renderSections();
+        renderEditMode();
+        renderTestCases();
+        renderSteps();
+      }
+
+      testcaseSearch.addEventListener("input", event => {
+        searchTerm = event.target.value;
+        renderApp();
+      });
+
+      toggleEditModeButton.addEventListener("click", () => {
+        isEditMode = !isEditMode;
+        if (!isEditMode) {
+          closeModal();
+        }
+        renderApp();
+      });
+
+      renameTestcaseButton.addEventListener("click", renameActiveModule);
+      deleteTestcaseButton.addEventListener("click", deleteActiveModule);
+      closeEditModal.addEventListener("click", closeModal);
+      editModal.addEventListener("click", event => {
+        if (event.target === editModal) {
+          closeModal();
+        }
+      });
+
+      document.addEventListener("keydown", event => {
+        if (event.key === "Escape" && editModal.classList.contains("is-open")) {
+          closeModal();
+        }
+      });
+
+      renderApp();
+    }
+
+    loadManualBook().catch(error => {
+      const testcaseList = document.getElementById("testcaseList");
+      testcaseList.innerHTML = `
+        <div class="empty-state">
+          Failed to load manual book data.<br>
+          <small>${error.message}</small>
+        </div>
+      `;
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+# Environment file (jangan pernah di-upload)
+.env
+
+# macOS
+.DS_Store
+
+# Temporary files
+tmp/
+temp/
+
+# Editor / IDE
+.vscode/
+.idea/
+
+# Python
+pycache/
+*.pyc
