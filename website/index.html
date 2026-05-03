@@ -758,7 +758,7 @@
     function getStepLabel(step) {
       return step.description && String(step.description).trim()
         ? step.description
-        : `Step ${step.step}`;
+        : `Step ${step.step_number}`;
     }
 
     function buildDetailUrl(moduleId, stepIndex, sectionName) {
@@ -1117,7 +1117,7 @@
           button.className = "step-button";
           button.innerHTML = `
             <span class="step-title">${getStepLabel(step)}</span>
-            <span class="step-meta ${statusClass}">Step ${step.step} • ${step.status}</span>
+            <span class="step-meta ${statusClass}">Step ${step.step_number} • ${step.status}</span>
           `;
           button.onclick = () => {
             window.location.href = detailUrl;

@@ -340,7 +340,7 @@
     function getStepLabel(step) {
       return step.description && String(step.description).trim()
         ? step.description
-        : `Step ${step.step}`;
+        : `Step ${step.step_number}`;
     }
 
     function parseImages(imageValue) {
@@ -571,7 +571,7 @@
       const modules = await fetch(`${API_BASE}/modules`).then(res => res.json());
       const module = modules.find(item => String(item.id) === String(moduleId));
       const steps = await fetch(`${API_BASE}/modules/${moduleId}/steps`).then(res => res.json());
-      const step = steps.find(item => Number(item.step) === stepNumber) || steps[0];
+      const step = steps.find(item => Number(item.step_number) === stepNumber) || steps[0];
 
       if (!module || !step) {
         detailContent.innerHTML = '<div class="empty-state">Step detail was not found.</div>';
@@ -582,25 +582,25 @@
       const selectedImage = getPreferredImage(images);
       const imagePath = selectedImage ? buildScreenshotUrl(selectedImage) : "";
       const statusClass = step.status === "PASS" ? "status-pass" : "status-fail";
-      const currentIndex = steps.findIndex(item => Number(item.step) === Number(step.step));
+      const currentIndex = steps.findIndex(item => Number(item.step_number) === Number(step.step_number));
       const previousStep = currentIndex > 0 ? steps[currentIndex - 1] : null;
       const nextStep = currentIndex >= 0 && currentIndex < steps.length - 1 ? steps[currentIndex + 1] : null;
 
       detailTitle.textContent = formatModuleName(module.name);
-      detailSubtitle.textContent = `Step ${step.step} • ${getStepLabel(step)}`;
+      detailSubtitle.textContent = `Step ${step.step_number} • ${getStepLabel(step)}`;
       detailNavigation.innerHTML = `
         <div class="detail-nav">
-          <div class="detail-nav-meta">Showing step ${step.step} of ${steps.length}</div>
+          <div class="detail-nav-meta">Showing step ${step.step_number} of ${steps.length}</div>
           <div class="detail-nav-actions">
             <a
               class="nav-button ${previousStep ? "" : "is-disabled"}"
-              href="${previousStep ? buildDetailUrl(moduleId, previousStep.step, sectionName) : "#"}"
+              href="${previousStep ? buildDetailUrl(moduleId, previousStep.step_number, sectionName) : "#"}"
             >
               &larr; Previous Step
             </a>
             <a
               class="nav-button ${nextStep ? "" : "is-disabled"}"
-              href="${nextStep ? buildDetailUrl(moduleId, nextStep.step, sectionName) : "#"}"
+              href="${nextStep ? buildDetailUrl(moduleId, nextStep.step_number, sectionName) : "#"}"
             >
               Next Step &rarr;
             </a>
@@ -611,7 +611,7 @@
       detailContent.innerHTML = `
         <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
           <span class="badge-soft">${formatModuleName(module.name)}</span>
-          <span class="badge-soft ${statusClass}">Step ${step.step} • ${step.status}</span>
+          <span class="badge-soft ${statusClass}">Step ${step.step_number} • ${step.status}</span>
         </div>
         <h2 class="h3 mb-3">${getStepLabel(step)}</h2>
       `;
@@ -620,11 +620,11 @@
         const imageButton = document.createElement("button");
         imageButton.type = "button";
         imageButton.className = "preview-link";
-        imageButton.onclick = () => openLightbox(imagePath, `${module.name} step ${step.step}`);
+        imageButton.onclick = () => openLightbox(imagePath, `${module.name} step ${step.step_number}`);
 
         const image = document.createElement("img");
         image.src = imagePath;
-        image.alt = `${module.name} step ${step.step}`;
+        image.alt = `${module.name} step ${step.step_number}`;
         image.className = "step-image";
 
         imageButton.appendChild(image);
